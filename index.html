@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Timer Music Player</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+    }
+
+    #playBtn {
+      padding: 15px 30px;
+      font-size: 1.3rem;
+      border: none;
+      border-radius: 12px;
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+
+    #playBtn:active {
+      transform: scale(0.93);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    #timer {
+      font-size: 2rem;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Song Timer</h1>
+
+  <button id="playBtn">Play 30-Second Song</button>
+
+  <div id="timer">30</div>
+
+  <audio id="clickSound" src="click.mp3"></audio>
+  <audio id="song" src="song.mp3"></audio>
+  <audio id="endSound" src="end-sound.mp3"></audio>
+
+  <script>
+    const playBtn = document.getElementById('playBtn');
+    const timerDisplay = document.getElementById('timer');
+
+    const clickSound = document.getElementById('clickSound');
+    const song = document.getElementById('song');
+    const endSound = document.getElementById('endSound');
+
+    let countdown;
+    let timeLeft = 30;
+
+    playBtn.addEventListener('click', () => {
+      clickSound.currentTime = 0;
+      clickSound.play();
+
+      clearInterval(countdown);
+      timeLeft = 30;
+      timerDisplay.textContent = timeLeft;
+
+      song.currentTime = 0;
+      song.play();
+
+      countdown = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          song.pause();
+          endSound.play();
+        }
+      }, 1000);
+    });
+  </script>
+
+</body>
+</html>
