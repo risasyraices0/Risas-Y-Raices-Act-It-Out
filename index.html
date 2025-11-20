@@ -17,11 +17,7 @@
       background-position: center;
       background-repeat: no-repeat;
     }
-    h1 {
-      font-size: 4rem;
-      margin-bottom: 40px;
-      color: white;
-    }
+    h1 { font-size: 4rem; margin-bottom: 40px; color: white; }
     #playBtn {
       padding: 30px 60px;
       font-size: 2.6rem;
@@ -33,23 +29,14 @@
       transition: transform 0.1s ease, box-shadow 0.1s ease;
       box-shadow: 0 8px 24px rgba(0,0,0,0.25);
     }
-    #playBtn:active {
-      transform: scale(0.90);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    #timer {
-      font-size: 4rem;
-      margin-top: 40px;
-      color: #9d6426;
-    }
+    #playBtn:active { transform: scale(0.90); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    #timer { font-size: 4rem; margin-top: 40px; color: #9d6426; }
   </style>
 </head>
 <body>
 
 <h1>Risas Y Raices: Act It Out</h1>
-
 <button id="playBtn">Start</button>
-
 <div id="timer">30</div>
 
 <audio id="clickSound" src="click.mp3"></audio>
@@ -78,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
       timeLeft = 30;
       timerDisplay.textContent = timeLeft;
 
-      // Play main song for full 30s
+      // Play main song
       song.currentTime = 0;
       await song.play();
 
@@ -86,9 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
       countdown = setInterval(() => {
         timeLeft--;
         timerDisplay.textContent = timeLeft;
-        if (timeLeft <= 0) {
-          clearInterval(countdown);
-        }
+        if (timeLeft <= 0) clearInterval(countdown);
       }, 1000);
 
       // Stop main song at 30s
@@ -97,15 +82,24 @@ document.addEventListener('DOMContentLoaded', () => {
         song.currentTime = 0;
       }, 30000);
 
-      // Play end sound at 29.5s using setTimeout inside a user gesture
-      // Need to resume audio context to allow playback
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioContext.state === 'suspended') await audioContext.resume();
+      // ----- Schedule end sound using Web Audio API -----
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      await audioCtx.resume(); // unlock user gesture
 
-      setTimeout(() => {
+      // Create a MediaElementSource for the end sound
+      const track = audioCtx.createMediaElementSource(endSound);
+      track.connect(audioCtx.destination);
+
+      // Schedule playback 29.5 seconds from now
+      const playTime = audioCtx.currentTime + 29.5;
+      endSound.currentTime = 0;
+      endSound.play().then(() => {
+        // pause immediately; we will start at scheduled time
+        endSound.pause();
         endSound.currentTime = 0;
-        endSound.play().catch(e => console.error('End sound playback failed:', e));
-      }, 29500);
+        // Use setTimeout as a small fallback to start playback at approx correct time
+        setTimeout(() => { endSound.play(); }, 29500);
+      });
 
     } catch (err) {
       console.error('Audio playback failed:', err);
