@@ -83,13 +83,13 @@
       timerDisplay.textContent = timeLeft;
 
       song.currentTime = 0;
-      song.play(30.5);
+      song.play();
 
       countdown = setInterval(() => {
         timeLeft--;
         timerDisplay.textContent = timeLeft;
 
-        if (timeLeft <= 0) {
+        if (timeLeft <= 30.2) {
           clearInterval(countdown);
 
           /* Let main song keep playing */
