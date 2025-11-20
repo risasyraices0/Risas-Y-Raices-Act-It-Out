@@ -39,9 +39,9 @@
 <button id="playBtn">Start</button>
 <div id="timer">30</div>
 
-<audio id="clickSound" src="click.mp3"></audio>
-<audio id="song" src="song.mp3"></audio>
-<audio id="endSound" src="end-sound.mp3"></audio>
+<audio id="clickSound" src="click.mp3" preload="auto"></audio>
+<audio id="song" src="song.mp3" preload="auto"></audio>
+<audio id="endSound" src="end-sound.mp3" preload="auto"></audio>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -65,9 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const countdown = setInterval(() => {
         timeLeft--;
         timerDisplay.textContent = timeLeft;
-        if (timeLeft <= 0) {
-          clearInterval(countdown);
-        }
+        if (timeLeft <= 0) clearInterval(countdown);
       }, 1000);
 
       // Play main song
@@ -80,10 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
         song.currentTime = 0;
       }, 30000);
 
-      // Play end sound after 29.5 seconds
+      // Play end sound at 29.5 seconds
       setTimeout(async () => {
         endSound.currentTime = 0;
-        await endSound.play();
+        await endSound.play().catch(err => console.error('End sound failed:', err));
       }, 29500);
 
     } catch (err) {
