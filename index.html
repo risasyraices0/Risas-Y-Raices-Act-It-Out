@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Risas Y Raices: Act It Out Timer</title>
+  <title>Risas Y Raíces: Act It Out Timer</title>
   <style>
     body {
       font-family: Cinzel, serif;
@@ -50,7 +50,7 @@
 </head>
 <body>
 
-<h1>Risas Y Raices: Act It Out</h1>
+<h1>Risas Y Raíces: Act It Out</h1>
 <button id="playBtn">Start</button>
 <div id="timer">30</div>
 
@@ -78,31 +78,29 @@ function startSequence() {
   // Play click sound
   clickSound.play().then(() => {
     clickSound.onended = () => {
-      // Start song
+      // Play song
       song.play();
 
-      const durationMs = 29400; // trigger end sound at 29.4 seconds
+      const duration = 30; // seconds
       const startTime = Date.now();
 
-      // Timer countdown (updates every 50ms for precision)
+      // Timer display
       countdown = setInterval(() => {
-        const elapsedMs = Date.now() - startTime;
-        const timeLeft = Math.max(0, Math.ceil((durationMs - elapsedMs) / 1000));
+        const elapsed = (Date.now() - startTime) / 1000;
+        const timeLeft = Math.max(0, Math.ceil(duration - elapsed));
         timerDisplay.textContent = timeLeft;
 
-        if (elapsedMs >= durationMs) {
-          clearInterval(countdown);
-          timerDisplay.textContent = 0;
+        if (elapsed >= duration) clearInterval(countdown);
+      }, 100);
 
-          // Stop the song
-          song.pause();
-          song.currentTime = 0;
+      // When song ends, play end sound
+      song.onended = () => {
+        clearInterval(countdown);
+        timerDisplay.textContent = 0;
 
-          // Play the end sound
-          endSound.currentTime = 0;
-          endSound.play();
-        }
-      }, 50);
+        endSound.currentTime = .5;
+        endSound.play();
+      };
     };
   }).catch(err => {
     console.log("Click sound play blocked:", err);
