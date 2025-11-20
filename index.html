@@ -51,55 +51,40 @@ document.addEventListener('DOMContentLoaded', () => {
   const song = document.getElementById('song');
   const endSound = document.getElementById('endSound');
 
-  let countdown;
-  let timeLeft = 30;
-
   playBtn.addEventListener('click', async () => {
     try {
-      // Play click sound
+      // Play click sound immediately
       clickSound.currentTime = 0;
       await clickSound.play();
 
       // Reset timer
-      clearInterval(countdown);
-      timeLeft = 30;
+      let timeLeft = 30;
       timerDisplay.textContent = timeLeft;
+
+      // Countdown timer
+      const countdown = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+        }
+      }, 1000);
 
       // Play main song
       song.currentTime = 0;
       await song.play();
 
-      // Countdown timer
-      countdown = setInterval(() => {
-        timeLeft--;
-        timerDisplay.textContent = timeLeft;
-        if (timeLeft <= 0) clearInterval(countdown);
-      }, 1000);
-
-      // Stop main song at 30s
+      // Stop main song after 30 seconds
       setTimeout(() => {
         song.pause();
         song.currentTime = 0;
       }, 30000);
 
-      // ----- Schedule end sound using Web Audio API -----
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      await audioCtx.resume(); // unlock user gesture
-
-      // Create a MediaElementSource for the end sound
-      const track = audioCtx.createMediaElementSource(endSound);
-      track.connect(audioCtx.destination);
-
-      // Schedule playback 29.5 seconds from now
-      const playTime = audioCtx.currentTime + 29.5;
-      endSound.currentTime = 0;
-      endSound.play().then(() => {
-        // pause immediately; we will start at scheduled time
-        endSound.pause();
+      // Play end sound after 29.5 seconds
+      setTimeout(async () => {
         endSound.currentTime = 0;
-        // Use setTimeout as a small fallback to start playback at approx correct time
-        setTimeout(() => { endSound.play(); }, 29500);
-      });
+        await endSound.play();
+      }, 29500);
 
     } catch (err) {
       console.error('Audio playback failed:', err);
