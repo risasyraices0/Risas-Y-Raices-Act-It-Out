@@ -65,21 +65,22 @@ const clickSound = document.getElementById('clickSound');
 const song = document.getElementById('song');
 const endSound = document.getElementById('endSound');
 
-playBtn.addEventListener('click', () => {
-  // Disable button so user cannot click again while timer is running
-  playBtn.disabled = true;
+function startSequence() {
+  // Reset audio
+  clickSound.pause();
+  clickSound.currentTime = 0;
+  song.pause();
+  song.currentTime = 0;
+  endSound.pause();
+  endSound.currentTime = 0;
 
   // Play click sound immediately
-  clickSound.currentTime = 0;
   clickSound.play();
 
-  // Wait for click sound to finish, then start song and timer
-  clickSound.addEventListener('ended', () => {
-    // Start song
-    song.currentTime = 0;
+  // When click sound ends, start song and timer
+  clickSound.onended = () => {
     song.play();
 
-    // Start 30-second timer
     let timeLeft = 30;
     timerDisplay.textContent = timeLeft;
 
@@ -90,20 +91,19 @@ playBtn.addEventListener('click', () => {
       if (timeLeft <= 0) {
         clearInterval(countdown);
 
-        // Stop song
+        // Stop the song
         song.pause();
         song.currentTime = 0;
 
         // Play end sound
-        endSound.currentTime = 0;
         endSound.play();
-
-        // Re-enable button if you want to allow replay
-        playBtn.disabled = false;
       }
     }, 1000);
-  }, { once: true }); // Ensures this listener only triggers once
-});
+  };
+}
+
+// Attach to button click
+playBtn.addEventListener('click', startSequence);
 </script>
 
 </body>
