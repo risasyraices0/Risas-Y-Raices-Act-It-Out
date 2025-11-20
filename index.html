@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Risas Y Raíces: Act It Out Timer</title>
+  <title>Risas Y Raices: Act It Out Timer</title>
   <style>
     body {
       font-family: Cinzel, serif;
@@ -50,7 +50,7 @@
 </head>
 <body>
 
-<h1>Risas Y Raíces: Act It Out</h1>
+<h1>Risas Y Raices: Act It Out</h1>
 <button id="playBtn">Start</button>
 <div id="timer">30</div>
 
@@ -72,28 +72,28 @@ let timeLeft = 30;
 playBtn.addEventListener('click', () => {
   // Play click sound immediately
   clickSound.currentTime = 0;
-  clickSound.play();
+  clickSound.play().catch(e => console.log("Click sound failed:", e));
 
   // Reset timer
   clearInterval(countdown);
   timeLeft = 30;
   timerDisplay.textContent = timeLeft;
 
-  // Play main song immediately
+  // Play main song immediately and wait until it starts
   song.currentTime = 0;
-  song.play();
+  song.play().then(() => {
+    // Stop main song exactly at 30 seconds
+    setTimeout(() => {
+      song.pause();
+      song.currentTime = 0;
+    }, 30000);
 
-  // Schedule end sound at 29 seconds
-  setTimeout(() => {
-    endSound.currentTime = 0;
-    endSound.play();
-  }, 30000);
-
-  // Schedule song to stop at 30 seconds
-  setTimeout(() => {
-    song.pause();
-    song.currentTime = 0;
-  }, 30000);
+    // Play end sound at 30 seconds
+    setTimeout(() => {
+      endSound.currentTime = 0;
+      endSound.play().catch(e => console.log("End sound failed:", e));
+    }, 30000);
+  }).catch(e => console.log("Song play failed:", e));
 
   // Start countdown
   countdown = setInterval(() => {
