@@ -12,7 +12,6 @@
       height: 100vh;
       margin: 0;
       text-align: center;
-      
       background-image: url('Background.png');
       background-size: cover;
       background-position: center;
@@ -45,7 +44,7 @@
     #timer {
       font-size: 4rem;
       margin-top: 40px;
-      color: #9d6426; /* Orange timer */
+      color: #9d6426;
     }
   </style>
 </head>
@@ -73,31 +72,49 @@
       let countdown;
       let timeLeft = 30;
 
-      playBtn.addEventListener('click', () => {
-        clickSound.currentTime = 0;
-        clickSound.play();
+      playBtn.addEventListener('click', async () => {
+        try {
+          // Play click sound
+          clickSound.currentTime = 0;
+          await clickSound.play();
 
-        clearInterval(countdown);
-        timeLeft = 30;
-        timerDisplay.textContent = timeLeft;
+          // Reset timer
+          clearInterval(countdown);
+          timeLeft = 30;
+          timerDisplay.textContent = timeLeft;
 
-        // Start main song
-        song.currentTime = 0;
-        song.play();
-
-        // Stop main song after 30 seconds
-        setTimeout(() => {
-          song.pause();
+          // Play main song
           song.currentTime = 0;
-        }, 30000); // 30000 ms = 30 seconds
+          await song.play();
 
-        // Play end sound after 29.5 seconds
-        setTimeout(() => {
-          endSound.currentTime = 0;
-          endSound.play();
-        }, 29500); // 29500 ms = 29.5 seconds
+          // Stop main song after 30s
+          setTimeout(() => {
+            song.pause();
+            song.currentTime = 0;
+          }, 30000);
 
-        // Countdown timer
-        countdown = setInterval(() => {
-          timeLeft--;
-          timerDisplay.textConten
+          // Play end sound at 29.5s
+          setTimeout(() => {
+            endSound.currentTime = 0;
+            endSound.play();
+          }, 29500);
+
+          // Countdown timer
+          countdown = setInterval(() => {
+            timeLeft--;
+            timerDisplay.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+              clearInterval(countdown);
+            }
+          }, 1000);
+
+        } catch(err) {
+          console.error('Audio playback failed:', err);
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
