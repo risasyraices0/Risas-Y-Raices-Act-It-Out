@@ -79,21 +79,19 @@ playBtn.addEventListener('click', () => {
   timeLeft = 30;
   timerDisplay.textContent = timeLeft;
 
-  // Play main song immediately and wait until it starts
+  // Play main song immediately
   song.currentTime = 0;
-  song.play().then(() => {
-    // Stop main song exactly at 30 seconds
-    setTimeout(() => {
-      song.pause();
-      song.currentTime = 0;
-    }, 30000);
+  song.play().catch(e => console.log("Song failed:", e));
 
-    // Play end sound at 30 seconds
-    setTimeout(() => {
-      endSound.currentTime = 0;
-      endSound.play().catch(e => console.log("End sound failed:", e));
-    }, 30000);
-  }).catch(e => console.log("Song play failed:", e));
+  // Stop main song at 30 seconds
+  setTimeout(() => {
+    song.pause();
+    song.currentTime = 0;
+
+    // Play end sound at the same moment
+    endSound.currentTime = 0;
+    endSound.play().catch(e => console.log("End sound failed:", e));
+  }, 30000);
 
   // Start countdown
   countdown = setInterval(() => {
