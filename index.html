@@ -66,27 +66,21 @@ const song = document.getElementById('song');
 const endSound = document.getElementById('endSound');
 
 let countdown = null;
-let songTimeout = null;
 
 function startSequence() {
-  // Stop all audio and clear timers
+  // Reset all audio
   clickSound.pause(); clickSound.currentTime = 0;
   song.pause(); song.currentTime = 0;
   endSound.pause(); endSound.currentTime = 0;
-
   if (countdown) clearInterval(countdown);
-  if (songTimeout) clearTimeout(songTimeout);
 
-  // Play click sound immediately
+  // Step 1: Play click sound
   clickSound.play();
 
-  // Start song and timer after click sound duration
-  const clickDuration = clickSound.duration * 1000 || 500; // fallback 0.5s if not loaded
-
-  songTimeout = setTimeout(() => {
+  // Step 2: When click sound ends, start song and timer
+  clickSound.onended = () => {
     song.play();
 
-    // Start 30-second timer
     let timeLeft = 30;
     timerDisplay.textContent = timeLeft;
 
@@ -101,13 +95,12 @@ function startSequence() {
         song.pause();
         song.currentTime = 0;
 
-        // Play end sound
+        // Step 3: Play end sound
         endSound.currentTime = 0;
         endSound.play();
       }
     }, 1000);
-
-  }, clickDuration);
+  };
 }
 
 // Attach to button click
