@@ -65,45 +65,62 @@ const clickSound = document.getElementById('clickSound');
 const song = document.getElementById('song');
 const endSound = document.getElementById('endSound');
 
-function startSequence() {
-  // Reset audio
-  clickSound.pause();
-  clickSound.currentTime = 0;
-  song.pause();
-  song.currentTime = 0;
-  endSound.pause();
-  endSound.currentTime = 0;
+let countdown = null;
 
-  // Play click sound immediately
-  clickSound.play();
-
-  // When click sound ends, start song and timer
-  clickSound.onended = () => {
-    song.play();
-
-    let timeLeft = 30;
-    timerDisplay.textContent = timeLeft;
-
-    const countdown = setInterval(() => {
-      timeLeft--;
-      timerDisplay.textContent = timeLeft;
-
-      if (timeLeft <= 0) {
-        clearInterval(countdown);
-
-        // Stop the song
-        song.pause();
-        song.currentTime = 0;
-
-        // Play end sound
-        endSound.play();
-      }
-    }, 1000);
-  };
+function playAudio(audioElement) {
+  return new Promise((resolve, reject) => {
+    audioElement.currentTime = 0;
+    const playPromise = audioElement.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        audioElement.onended = () => {
+          resolve();
+        };
+      }).catch(err => reject(err));
+    } else {
+      resolve(); // fallback if play() returns undefined
+    }
+  });
 }
 
-// Attach to button click
-playBtn.addEventListener('click', startSequence);
+async function startSequence() {
+  // Stop any audio and timer
+  clearInterval(countdown);
+  countdown = null;
+  clickSound.pause(); clickSound.currentTime = 0;
+  song.pause(); song.currentTime = 0;
+  endSound.pause(); endSound.currentTime = 0;
+
+  // Step 1: Play click sound
+  await playAudio(clickSound);
+
+  // Step 2: Play song and start 30s timer
+  song.currentTime = 0;
+  song.play();
+  let timeLeft = 30;
+  timerDisplay.textContent = timeLeft;
+
+  countdown = setInterval(() => {
+    timeLeft--;
+    timerDisplay.textContent = timeLeft;
+
+    if (timeLeft <= 0) {
+      clearInterval(countdown);
+      countdown = null;
+      // Stop song
+      song.pause();
+      song.currentTime = 0;
+
+      // Play end sound
+      endSound.currentTime = 0;
+      endSound.play();
+    }
+  }, 1000);
+}
+
+playBtn.addEventListener('click', () => {
+  startSequence().catch(err => console.error(err));
+});
 </script>
 
 </body>
