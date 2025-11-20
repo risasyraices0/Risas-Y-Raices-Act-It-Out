@@ -1,3 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Risas Y Raices: Act It Out Timer</title>
+  <style>
+    body {
+      font-family: Cinzel, serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+      background-image: url('Background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    h1 {
+      font-size: 4rem;
+      margin-bottom: 40px;
+      color: white;
+    }
+
+    #playBtn {
+      padding: 30px 60px;
+      font-size: 2.6rem;
+      border: none;
+      border-radius: 24px;
+      background: #5f7f94;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+
+    #playBtn:active {
+      transform: scale(0.90);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    #timer {
+      font-size: 4rem;
+      margin-top: 40px;
+      color: #ff8c32;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Risas Y Raices: Act It Out</h1>
+<button id="playBtn">Start</button>
+<div id="timer">30</div>
+
+<audio id="clickSound" src="click.mp3" preload="auto"></audio>
+<audio id="song" src="song.mp3" preload="auto"></audio>
+<audio id="endSound" src="end-sound.mp3" preload="auto"></audio>
+
 <script>
 const playBtn = document.getElementById('playBtn');
 const timerDisplay = document.getElementById('timer');
@@ -24,21 +84,23 @@ function startSequence() {
       const durationMs = 30000; // 30 seconds in milliseconds
       const startTime = Date.now();
 
-      // Timer display (unchanged)
+      // Timer display (still whole seconds)
       countdown = setInterval(() => {
         const elapsedMs = Date.now() - startTime;
         const timeLeft = Math.max(0, Math.ceil((durationMs - elapsedMs) / 1000));
         timerDisplay.textContent = timeLeft;
 
         if (elapsedMs >= durationMs) clearInterval(countdown);
-      }, 50); // more frequent checks for millisecond timing
+      }, 50); // check every 50ms for millisecond precision
 
-      // When song ends, play end sound (UNCHANGED)
+      // Play end sound safely with milliseconds
       song.onended = () => {
         clearInterval(countdown);
         timerDisplay.textContent = 0;
 
-        endSound.currentTime = 29300;
+        // Example: start end sound at 0 milliseconds
+        const endSoundStartMs = 0; 
+        endSound.currentTime = endSoundStartMs / 1000; // convert ms → seconds
         endSound.play();
       };
     };
@@ -49,3 +111,6 @@ function startSequence() {
 
 playBtn.addEventListener('click', startSequence);
 </script>
+
+</body>
+</html>
