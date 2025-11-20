@@ -81,27 +81,26 @@ function startSequence() {
       // Play song
       song.play();
 
-      const endTimeMs = 29400; // trigger end sound at 29.4 seconds
+      const duration = 30; // seconds
       const startTime = Date.now();
 
+      // Timer display
       countdown = setInterval(() => {
-        const elapsedMs = Date.now() - startTime;
-        const timeLeft = Math.max(0, Math.ceil((30000 - elapsedMs) / 1000)); // display timer in seconds
+        const elapsed = (Date.now() - startTime) / 1000;
+        const timeLeft = Math.max(0, Math.ceil(duration - elapsed));
         timerDisplay.textContent = timeLeft;
 
-        if (elapsedMs >= endTimeMs) {
-          clearInterval(countdown);
-          timerDisplay.textContent = 0;
+        if (elapsed >= duration) clearInterval(countdown);
+      }, 100);
 
-          // Stop the song
-          song.pause();
-          song.currentTime = 0;
+      // When song ends, play end sound
+      song.onended = () => {
+        clearInterval(countdown);
+        timerDisplay.textContent = 0;
 
-          // Play end sound
-          endSound.currentTime = 0;
-          endSound.play();
-        }
-      }, 50); // check every 50ms for precision
+        endSound.currentTime = 1;
+        endSound.play();
+      };
     };
   }).catch(err => {
     console.log("Click sound play blocked:", err);
