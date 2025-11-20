@@ -67,9 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let countdown;
   let timeLeft = 30;
 
-  // Create Web Audio context for scheduling end sound
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
   playBtn.addEventListener('click', async () => {
     try {
       // Play click sound
@@ -81,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
       timeLeft = 30;
       timerDisplay.textContent = timeLeft;
 
-      // Play main song
+      // Play main song for full 30s
       song.currentTime = 0;
       await song.play();
 
@@ -89,26 +86,25 @@ document.addEventListener('DOMContentLoaded', () => {
       countdown = setInterval(() => {
         timeLeft--;
         timerDisplay.textContent = timeLeft;
-
         if (timeLeft <= 0) {
           clearInterval(countdown);
         }
       }, 1000);
 
-      // Schedule main song stop at 30s
+      // Stop main song at 30s
       setTimeout(() => {
         song.pause();
         song.currentTime = 0;
       }, 30000);
 
-      // Schedule end sound at 29.5s using Web Audio API
-      const track = audioContext.createMediaElementSource(endSound);
-      track.connect(audioContext.destination);
-      endSound.currentTime = 0;
-      // Resume AudioContext if it is suspended
+      // Play end sound at 29.5s using setTimeout inside a user gesture
+      // Need to resume audio context to allow playback
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
       if (audioContext.state === 'suspended') await audioContext.resume();
+
       setTimeout(() => {
-        endSound.play();
+        endSound.currentTime = 0;
+        endSound.play().catch(e => console.error('End sound playback failed:', e));
       }, 29500);
 
     } catch (err) {
