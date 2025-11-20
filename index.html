@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html>
 <head>
   <title>Risas Y Raices: Act It Out Timer</title>
@@ -12,12 +12,14 @@
       height: 100vh;
       margin: 0;
       text-align: center;
+      
       background-image: url('Background.png');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
     }
 
+    /* Title in white */
     h1 {
       font-size: 4rem;
       margin-bottom: 40px;
@@ -41,48 +43,62 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
+    /* Timer number color ORANGE */
     #timer {
       font-size: 4rem;
       margin-top: 40px;
-      color: #ff8c32;
+      color: #ff8c32; /* Change this if you want a different orange */
     }
   </style>
 </head>
 <body>
 
-<h1>Risas Y Raices: Act It Out</h1>
-<button id="playBtn">Start</button>
-<div id="timer">30</div>
+  <h1>Risas Y Raices: Act It Out</h1>
 
-<audio id="clickSound" src="click.mp3" preload="auto"></audio>
-<audio id="song" src="song.mp3" preload="auto"></audio>
-<audio id="endSound" src="end-sound.mp3" preload="auto"></audio>
+  <button id="playBtn">Start</button>
 
-<script>
-const playBtn = document.getElementById('playBtn');
-const timerDisplay = document.getElementById('timer');
+  <div id="timer">30</div>
 
-const clickSound = document.getElementById('clickSound');
-const song = document.getElementById('song');
-const endSound = document.getElementById('endSound');
+  <audio id="clickSound" src="click.mp3"></audio>
+  <audio id="song" src="song.mp3"></audio>
+  <audio id="endSound" src="end-sound.mp3"></audio>
 
-let countdown;
-let timeLeft = 30;
+  <script>
+    const playBtn = document.getElementById('playBtn');
+    const timerDisplay = document.getElementById('timer');
 
-playBtn.addEventListener('click', () => {
-  try {
-    // Play click sound immediately
-    clickSound.currentTime = 0;
-    clickSound.play().catch(err => console.error('Click sound failed:', err));
+    const clickSound = document.getElementById('clickSound');
+    const song = document.getElementById('song');
+    const endSound = document.getElementById('endSound');
 
-    // Reset timer
-    clearInterval(countdown);
-    timeLeft = 30;
-    timerDisplay.textContent = timeLeft;
+    let countdown;
+    let timeLeft = 30;
 
-    // Play main song immediately
-    song.currentTime = 0;
-    song.play().catch(err => console.error('Song failed:', err));
+    playBtn.addEventListener('click', () => {
+      clickSound.currentTime = 0;
+      clickSound.play();
 
-    // Stop main song after 30s
-    setTimeou
+      clearInterval(countdown);
+      timeLeft = 30;
+      timerDisplay.textContent = timeLeft;
+
+      song.currentTime = 0;
+      song.play();
+
+      countdown = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+
+          /* Let main song keep playing */
+          endSound.currentTime = 1;
+          endSound.play();
+        }
+      }, 1000);
+    });
+  </script>
+
+</body>
+</html>
