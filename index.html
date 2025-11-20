@@ -78,10 +78,15 @@ document.addEventListener('DOMContentLoaded', () => {
         song.currentTime = 0;
       }, 30000);
 
-      // Play end sound at 29.5 seconds
-      setTimeout(async () => {
+      // Prepare end sound: play paused immediately to unlock mobile playback
+      endSound.currentTime = 0;
+      await endSound.play();
+      endSound.pause();
+
+      // Resume end sound at 29.5s
+      setTimeout(() => {
         endSound.currentTime = 0;
-        await endSound.play().catch(err => console.error('End sound failed:', err));
+        endSound.play().catch(err => console.error('End sound failed:', err));
       }, 29500);
 
     } catch (err) {
