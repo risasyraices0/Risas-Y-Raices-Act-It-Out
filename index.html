@@ -44,7 +44,7 @@
     #timer {
       font-size: 4rem;
       margin-top: 40px;
-      color: #9d6426;
+      color: #9d6426; /* Orange timer */
     }
   </style>
 </head>
@@ -87,17 +87,25 @@
           song.currentTime = 0;
           await song.play();
 
+          // Unlock end sound by playing silently
+          endSound.volume = 0;
+          endSound.currentTime = 0;
+          await endSound.play();
+          endSound.pause();
+          endSound.currentTime = 0;
+          endSound.volume = 1; // restore volume
+
+          // Schedule end sound at 29.5s
+          setTimeout(() => {
+            endSound.currentTime = 0;
+            endSound.play();
+          }, 29500);
+
           // Stop main song after 30s
           setTimeout(() => {
             song.pause();
             song.currentTime = 0;
           }, 30000);
-
-          // Play end sound at 29.5s
-          setTimeout(() => {
-            endSound.currentTime = 0;
-            endSound.play();
-          }, 29500);
 
           // Countdown timer
           countdown = setInterval(() => {
