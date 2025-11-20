@@ -86,17 +86,22 @@
       song.play();
 
       countdown = setInterval(() => {
-        timeLeft--;
-        timerDisplay.textContent = timeLeft;
+  timeLeft--;
+  timerDisplay.textContent = timeLeft;
 
-        if (timeLeft <= 30.2) {
-          clearInterval(countdown);
+  /* ⭐ STOP SONG AT A SPECIFIC TIME ⭐ */
+  if (timeLeft === 12) {  // ← change 12 to ANY number you want
+    song.pause();
+    song.currentTime = 0;
+  }
 
-          /* Let main song keep playing */
-          endSound.currentTime = 0;
-          endSound.play();
-        }
-      }, 1000);
+  if (timeLeft <= 0) {
+    clearInterval(countdown);
+    endSound.currentTime = 0;
+    endSound.play();
+  }
+}, 1000);
+
     });
   </script>
 
