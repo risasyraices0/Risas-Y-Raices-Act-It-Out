@@ -19,7 +19,6 @@
       background-repeat: no-repeat;
     }
 
-    /* Title in white */
     h1 {
       font-size: 4rem;
       margin-bottom: 40px;
@@ -43,11 +42,10 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    /* Timer number color ORANGE */
     #timer {
       font-size: 4rem;
       margin-top: 40px;
-      color: #9d6426; /* Change this if you want a different orange */
+      color: #9d6426;
     }
   </style>
 </head>
@@ -82,29 +80,21 @@
       timeLeft = 30;
       timerDisplay.textContent = timeLeft;
 
+      // Start the main song (full 30s)
       song.currentTime = 0;
       song.play();
 
+      // Play end sound at 29.5 seconds
+      setTimeout(() => {
+        endSound.currentTime = 0;
+        endSound.play();
+      }, 500); // 0.5 seconds after starting
+
+      // Countdown timer
       countdown = setInterval(() => {
-  timeLeft--;
-  timerDisplay.textContent = timeLeft;
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
 
-  /* ⭐ STOP SONG AT A SPECIFIC TIME ⭐ */
-  if (timeLeft === 26) {  // ← change 12 to ANY number you want
-    song.pause();
-    song.currentTime = 0;
-  }
-
-  if (timeLeft <= 27) {
-    clearInterval(countdown);
-    endSound.currentTime = 0;
-    endSound.play();
-  }
-}, 1000);
-
-    });
-  </script>
-
-</body>
-</html>
-
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          // song continues until 30s naturally
