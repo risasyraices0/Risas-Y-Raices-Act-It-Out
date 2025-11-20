@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Risas Y Raíces: Act It Out Timer</title>
+  <title>Act It Out Timer</title>
   <style>
     body {
       font-family: Cinzel, serif;
@@ -17,7 +17,7 @@
       background-position: center;
       background-repeat: no-repeat;
     }
-    h1 { font-size: 4rem; margin-bottom: 40px; color: white; }
+    h1 { font-size: 4rem; color: white; margin-bottom: 40px; }
     #playBtn {
       padding: 30px 60px;
       font-size: 2.6rem;
@@ -26,73 +26,51 @@
       background: #5f7f94;
       color: white;
       cursor: pointer;
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
     }
-    #playBtn:active { transform: scale(0.90); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
     #timer { font-size: 4rem; margin-top: 40px; color: #9d6426; }
   </style>
 </head>
 <body>
 
-<h1>Risas Y Raíces: Act It Out</h1>
+<h1>Act It Out</h1>
 <button id="playBtn">Start</button>
 <div id="timer">30</div>
 
-<audio id="clickSound" src="click.mp3" preload="auto"></audio>
 <audio id="song" src="song.mp3" preload="auto"></audio>
 <audio id="endSound" src="end-sound.mp3" preload="auto"></audio>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const playBtn = document.getElementById('playBtn');
-  const timerDisplay = document.getElementById('timer');
-  const clickSound = document.getElementById('clickSound');
-  const song = document.getElementById('song');
-  const endSound = document.getElementById('endSound');
+const playBtn = document.getElementById('playBtn');
+const timerDisplay = document.getElementById('timer');
+const song = document.getElementById('song');
+const endSound = document.getElementById('endSound');
 
-  playBtn.addEventListener('click', async () => {
-    try {
-      // Play click sound immediately
-      clickSound.currentTime = 0;
-      await clickSound.play();
+playBtn.addEventListener('click', () => {
+  let timeLeft = 30;
+  timerDisplay.textContent = timeLeft;
 
-      // Reset timer
-      let timeLeft = 30;
-      timerDisplay.textContent = timeLeft;
+  // Countdown timer
+  const countdown = setInterval(() => {
+    timeLeft--;
+    timerDisplay.textContent = timeLeft;
+    if (timeLeft <= 0) clearInterval(countdown);
+  }, 1000);
 
-      // Countdown timer
-      const countdown = setInterval(() => {
-        timeLeft--;
-        timerDisplay.textContent = timeLeft;
-        if (timeLeft <= 0) clearInterval(countdown);
-      }, 1000);
+  // Play main song
+  song.currentTime = 0;
+  song.play();
 
-      // Play main song
-      song.currentTime = 0;
-      await song.play();
+  // Stop main song after 30 seconds
+  setTimeout(() => {
+    song.pause();
+    song.currentTime = 0;
+  }, 30000);
 
-      // Stop main song after 30 seconds
-      setTimeout(() => {
-        song.pause();
-        song.currentTime = 0;
-      }, 30000);
-
-      // Prepare end sound: play paused immediately to unlock mobile playback
-      endSound.currentTime = 0;
-      await endSound.play();
-      endSound.pause();
-
-      // Resume end sound at 29.5s
-      setTimeout(() => {
-        endSound.currentTime = 0;
-        endSound.play().catch(err => console.error('End sound failed:', err));
-      }, 29500);
-
-    } catch (err) {
-      console.error('Audio playback failed:', err);
-    }
-  });
+  // Play end sound at 29 seconds
+  setTimeout(() => {
+    endSound.currentTime = 0;
+    endSound.play();
+  }, 29000);
 });
 </script>
 
