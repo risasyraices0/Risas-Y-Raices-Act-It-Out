@@ -59,38 +59,52 @@
 <audio id="endSound" src="end-sound.mp3" preload="auto"></audio>
 
 <script>
-  const playBtn = document.getElementById('playBtn');
-  const timerDisplay = document.getElementById('timer');
-  const clickSound = document.getElementById('clickSound');
-  const song = document.getElementById('song');
-  const endSound = document.getElementById('endSound');
+const playBtn = document.getElementById('playBtn');
+const timerDisplay = document.getElementById('timer');
+const clickSound = document.getElementById('clickSound');
+const song = document.getElementById('song');
+const endSound = document.getElementById('endSound');
 
-  playBtn.addEventListener('click', () => {
-    // Play click sound
-    clickSound.currentTime = 0;
-    clickSound.play();
+playBtn.addEventListener('click', () => {
+  // Disable button so user cannot click again while timer is running
+  playBtn.disabled = true;
 
-    // Once click sound ends, start timer and song
-    clickSound.onended = () => {
-      let timeLeft = 30;
+  // Play click sound immediately
+  clickSound.currentTime = 0;
+  clickSound.play();
+
+  // Wait for click sound to finish, then start song and timer
+  clickSound.addEventListener('ended', () => {
+    // Start song
+    song.currentTime = 0;
+    song.play();
+
+    // Start 30-second timer
+    let timeLeft = 30;
+    timerDisplay.textContent = timeLeft;
+
+    const countdown = setInterval(() => {
+      timeLeft--;
       timerDisplay.textContent = timeLeft;
 
-      song.currentTime = 0;
-      song.play();
+      if (timeLeft <= 0) {
+        clearInterval(countdown);
 
-      const countdown = setInterval(() => {
-        timeLeft--;
-        timerDisplay.textContent = timeLeft;
+        // Stop song
+        song.pause();
+        song.currentTime = 0;
 
-        if (timeLeft <= 0) {
-          clearInterval(countdown);
+        // Play end sound
+        endSound.currentTime = 0;
+        endSound.play();
 
-          // Stop the song
-          song.pause();
-          song.currentTime = 0;
-
-          // Play end sound after timer
-          endSound.currentTime = 0;
-          endSound.play();
-        }
+        // Re-enable button if you want to allow replay
+        playBtn.disabled = false;
       }
+    }, 1000);
+  }, { once: true }); // Ensures this listener only triggers once
+});
+</script>
+
+</body>
+</html>
