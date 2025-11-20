@@ -68,42 +68,45 @@ const endSound = document.getElementById('endSound');
 let countdown = null;
 
 function startSequence() {
-  // Reset all audio
+  // Reset audio
   clickSound.pause(); clickSound.currentTime = 0;
   song.pause(); song.currentTime = 0;
   endSound.pause(); endSound.currentTime = 0;
+
   if (countdown) clearInterval(countdown);
 
-  // Step 1: Play click sound
-  clickSound.play();
+  // Play click sound
+  clickSound.play().then(() => {
+    clickSound.onended = () => {
+      // Play song
+      song.play();
 
-  // Step 2: When click sound ends, start song and timer
-  clickSound.onended = () => {
-    song.play();
+      const duration = 30; // seconds
+      const startTime = Date.now();
 
-    let timeLeft = 30;
-    timerDisplay.textContent = timeLeft;
+      // Timer display
+      countdown = setInterval(() => {
+        const elapsed = (Date.now() - startTime) / 1000;
+        const timeLeft = Math.max(0, Math.ceil(duration - elapsed));
+        timerDisplay.textContent = timeLeft;
 
-    countdown = setInterval(() => {
-      timeLeft--;
-      timerDisplay.textContent = timeLeft;
+        if (elapsed >= duration) clearInterval(countdown);
+      }, 100);
 
-      if (timeLeft <= 0) {
+      // When song ends, play end sound
+      song.onended = () => {
         clearInterval(countdown);
-        countdown = null;
+        timerDisplay.textContent = 0;
 
-        song.pause();
-        song.currentTime = 0;
-
-        // Step 3: Play end sound
         endSound.currentTime = 0;
         endSound.play();
-      }
-    }, 1000);
-  };
+      };
+    };
+  }).catch(err => {
+    console.log("Click sound play blocked:", err);
+  });
 }
 
-// Attach to button click
 playBtn.addEventListener('click', startSequence);
 </script>
 
