@@ -84,23 +84,24 @@ function startSequence() {
       const duration = 30; // seconds
       const startTime = Date.now();
 
-      // Timer display
+      // Timer countdown
       countdown = setInterval(() => {
         const elapsed = (Date.now() - startTime) / 1000;
         const timeLeft = Math.max(0, Math.ceil(duration - elapsed));
         timerDisplay.textContent = timeLeft;
 
-        if (elapsed >= duration) clearInterval(countdown);
+        // When timer reaches 0, stop song and play end sound
+        if (elapsed >= duration) {
+          clearInterval(countdown);
+          timerDisplay.textContent = 0;
+
+          song.pause();
+          song.currentTime = 0;
+
+          endSound.currentTime = 0;
+          endSound.play();
+        }
       }, 100);
-
-      // When song ends, play end sound
-      song.onended = () => {
-        clearInterval(countdown);
-        timerDisplay.textContent = 0;
-
-        endSound.currentTime = 0;
-        endSound.play();
-      };
     };
   }).catch(err => {
     console.log("Click sound play blocked:", err);
