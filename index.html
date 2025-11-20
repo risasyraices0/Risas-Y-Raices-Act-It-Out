@@ -81,29 +81,23 @@
         timeLeft = 30;
         timerDisplay.textContent = timeLeft;
 
-        // Start main song for full 30s
+        // Start main song
         song.currentTime = 0;
         song.play();
 
-        // Play end sound at 29.5 seconds
+        // Stop main song after 30 seconds
+        setTimeout(() => {
+          song.pause();
+          song.currentTime = 0;
+        }, 30000); // 30000 ms = 30 seconds
+
+        // Play end sound after 29.5 seconds
         setTimeout(() => {
           endSound.currentTime = 0;
           endSound.play();
-        }, 500); // 0.5 seconds after start
+        }, 29500); // 29500 ms = 29.5 seconds
 
         // Countdown timer
         countdown = setInterval(() => {
           timeLeft--;
-          timerDisplay.textContent = timeLeft;
-
-          if (timeLeft <= 0) {
-            clearInterval(countdown);
-            // song continues until it finishes naturally
-          }
-        }, 1000);
-      });
-    });
-  </script>
-
-</body>
-</html>
+          timerDisplay.textConten
