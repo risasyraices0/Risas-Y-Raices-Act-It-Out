@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html>
 <head>
   <title>Risas Y Raices: Act It Out Timer</title>
@@ -19,9 +19,11 @@
       background-repeat: no-repeat;
     }
 
+    /* Title in white */
     h1 {
       font-size: 4rem;
       margin-bottom: 40px;
+      color: white;
     }
 
     #playBtn {
@@ -41,9 +43,11 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
+    /* Timer number color ORANGE */
     #timer {
       font-size: 4rem;
       margin-top: 40px;
+      color: #9d6426; /* Change this if you want a different orange */
     }
   </style>
 </head>
@@ -87,7 +91,9 @@
 
         if (timeLeft <= 0) {
           clearInterval(countdown);
-          song.pause();
+
+          /* Let main song keep playing */
+          endSound.currentTime = 0;
           endSound.play();
         }
       }, 1000);
@@ -96,3 +102,4 @@
 
 </body>
 </html>
+
