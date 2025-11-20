@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html>
 <head>
   <title>Risas Y Raices: Act It Out Timer</title>
@@ -17,13 +17,11 @@
       background-position: center;
       background-repeat: no-repeat;
     }
-
     h1 {
       font-size: 4rem;
       margin-bottom: 40px;
       color: white;
     }
-
     #playBtn {
       padding: 30px 60px;
       font-size: 2.6rem;
@@ -35,94 +33,90 @@
       transition: transform 0.1s ease, box-shadow 0.1s ease;
       box-shadow: 0 8px 24px rgba(0,0,0,0.25);
     }
-
     #playBtn:active {
       transform: scale(0.90);
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
-
     #timer {
       font-size: 4rem;
       margin-top: 40px;
-      color: #9d6426; /* Orange timer */
+      color: #9d6426;
     }
   </style>
 </head>
 <body>
 
-  <h1>Risas Y Raices: Act It Out</h1>
+<h1>Risas Y Raices: Act It Out</h1>
 
-  <button id="playBtn">Start</button>
+<button id="playBtn">Start</button>
 
-  <div id="timer">30</div>
+<div id="timer">30</div>
 
-  <audio id="clickSound" src="click.mp3"></audio>
-  <audio id="song" src="song.mp3"></audio>
-  <audio id="endSound" src="end-sound.mp3"></audio>
+<audio id="clickSound" src="click.mp3"></audio>
+<audio id="song" src="song.mp3"></audio>
+<audio id="endSound" src="end-sound.mp3"></audio>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const playBtn = document.getElementById('playBtn');
-      const timerDisplay = document.getElementById('timer');
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const playBtn = document.getElementById('playBtn');
+  const timerDisplay = document.getElementById('timer');
+  const clickSound = document.getElementById('clickSound');
+  const song = document.getElementById('song');
+  const endSound = document.getElementById('endSound');
 
-      const clickSound = document.getElementById('clickSound');
-      const song = document.getElementById('song');
-      const endSound = document.getElementById('endSound');
+  let countdown;
+  let timeLeft = 30;
 
-      let countdown;
-      let timeLeft = 30;
+  // Create Web Audio context for scheduling end sound
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-      playBtn.addEventListener('click', async () => {
-        try {
-          // Play click sound
-          clickSound.currentTime = 0;
-          await clickSound.play();
+  playBtn.addEventListener('click', async () => {
+    try {
+      // Play click sound
+      clickSound.currentTime = 0;
+      await clickSound.play();
 
-          // Reset timer
+      // Reset timer
+      clearInterval(countdown);
+      timeLeft = 30;
+      timerDisplay.textContent = timeLeft;
+
+      // Play main song
+      song.currentTime = 0;
+      await song.play();
+
+      // Countdown timer
+      countdown = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
           clearInterval(countdown);
-          timeLeft = 30;
-          timerDisplay.textContent = timeLeft;
-
-          // Play main song
-          song.currentTime = 0;
-          await song.play();
-
-          // Unlock end sound by playing silently
-          endSound.volume = 0;
-          endSound.currentTime = 0;
-          await endSound.play();
-          endSound.pause();
-          endSound.currentTime = 0;
-          endSound.volume = 1; // restore volume
-
-          // Schedule end sound at 29.5s
-          setTimeout(() => {
-            endSound.currentTime = 0;
-            endSound.play();
-          }, 29500);
-
-          // Stop main song after 30s
-          setTimeout(() => {
-            song.pause();
-            song.currentTime = 0;
-          }, 30000);
-
-          // Countdown timer
-          countdown = setInterval(() => {
-            timeLeft--;
-            timerDisplay.textContent = timeLeft;
-
-            if (timeLeft <= 0) {
-              clearInterval(countdown);
-            }
-          }, 1000);
-
-        } catch(err) {
-          console.error('Audio playback failed:', err);
         }
-      });
-    });
-  </script>
+      }, 1000);
+
+      // Schedule main song stop at 30s
+      setTimeout(() => {
+        song.pause();
+        song.currentTime = 0;
+      }, 30000);
+
+      // Schedule end sound at 29.5s using Web Audio API
+      const track = audioContext.createMediaElementSource(endSound);
+      track.connect(audioContext.destination);
+      endSound.currentTime = 0;
+      // Resume AudioContext if it is suspended
+      if (audioContext.state === 'suspended') await audioContext.resume();
+      setTimeout(() => {
+        endSound.play();
+      }, 29500);
+
+    } catch (err) {
+      console.error('Audio playback failed:', err);
+    }
+  });
+});
+</script>
 
 </body>
 </html>
