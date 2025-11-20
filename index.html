@@ -59,47 +59,41 @@
 <audio id="endSound" src="end-sound.mp3" preload="auto"></audio>
 
 <script>
-const playBtn = document.getElementById('playBtn');
-const timerDisplay = document.getElementById('timer');
+  const playBtn = document.getElementById('playBtn');
+  const timerDisplay = document.getElementById('timer');
+  const clickSound = document.getElementById('clickSound');
+  const song = document.getElementById('song');
+  const endSound = document.getElementById('endSound');
 
-const clickSound = document.getElementById('clickSound');
-const song = document.getElementById('song');
-const endSound = document.getElementById('endSound');
+  playBtn.addEventListener('click', () => {
+    // Play click sound first
+    clickSound.currentTime = 0;
+    clickSound.play();
 
-let countdown;
-let timeLeft = 30;
+    // Start the 30-second timer and song after click sound
+    clickSound.onended = () => {
+      let timeLeft = 30;
+      timerDisplay.textContent = timeLeft;
 
-playBtn.addEventListener('click', () => {
-  // Play click sound immediately
-  clickSound.currentTime = 0;
-  clickSound.play().catch(e => console.log("Click sound failed:", e));
+      song.currentTime = 0;
+      song.play();
 
-  // Reset timer
-  clearInterval(countdown);
-  timeLeft = 30;
-  timerDisplay.textContent = timeLeft;
+      const countdown = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
 
-  // Play main song immediately
-  song.currentTime = 0;
-  song.play().catch(e => console.log("Song failed:", e));
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          song.pause();
+          song.currentTime = 0;
 
-  // Stop main song at 30 seconds
-  setTimeout(() => {
-    song.pause();
-    song.currentTime = 0;
-
-    // Play end sound at the same moment
-    endSound.currentTime = 0;
-    endSound.play().catch(e => console.log("End sound failed:", e));
-  }, 30000);
-
-  // Start countdown
-  countdown = setInterval(() => {
-    timeLeft--;
-    timerDisplay.textContent = timeLeft;
-    if (timeLeft <= 0) clearInterval(countdown);
-  }, 1000);
-});
+          // Play end sound
+          endSound.currentTime = 0;
+          endSound.play();
+        }
+      }, 1000);
+    };
+  });
 </script>
 
 </body>
