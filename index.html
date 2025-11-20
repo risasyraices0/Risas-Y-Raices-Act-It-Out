@@ -50,25 +50,19 @@
 </head>
 <body>
 
-  <h1>Risas Y Raices: Act It Out</h1>
-  <button id="playBtn">Start</button>
-  <div id="timer">30</div>
+<h1>Risas Y Raices: Act It Out</h1>
+<button id="playBtn">Start</button>
+<div id="timer">30</div>
 
-  <audio id="clickSound" src="click.mp3"></audio>
-  <audio id="song" src="song.mp3"></audio>
-  <audio id="endSound" src="end-sound.mp3"></audio>
+<audio id="clickSound" src="click.mp3" preload="auto"></audio>
+<audio id="song" src="song.mp3" preload="auto"></audio>
+<audio id="endSound" src="end-sound.mp3" preload="auto"></audio>
 
-  <script>
-    const playBtn = document.getElementById('playBtn');
-    const timerDisplay = document.getElementById('timer');
+<script>
+const playBtn = document.getElementById('playBtn');
+const timer = document.getElementById('timer');
+const clickSound = document.getElementById('clickSound');
+const song = document.getElementById('song');
+const endSound = document.getElementById('endSound');
 
-    const clickSound = document.getElementById('clickSound');
-    const song = document.getElementById('song');
-    const endSound = document.getElementById('endSound');
-
-    let countdown;
-    let timeLeft = 30;
-
-    playBtn.addEventListener('click', () => {
-      // Play click sound immediately
-      clickSound.currentTime =
+playBtn.addEventListener('c
