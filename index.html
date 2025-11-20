@@ -45,7 +45,7 @@
     #timer {
       font-size: 4rem;
       margin-top: 40px;
-      color: #9d6426;
+      color: #9d6426; /* Orange timer */
     }
   </style>
 </head>
@@ -62,39 +62,48 @@
   <audio id="endSound" src="end-sound.mp3"></audio>
 
   <script>
-    const playBtn = document.getElementById('playBtn');
-    const timerDisplay = document.getElementById('timer');
+    document.addEventListener('DOMContentLoaded', () => {
+      const playBtn = document.getElementById('playBtn');
+      const timerDisplay = document.getElementById('timer');
 
-    const clickSound = document.getElementById('clickSound');
-    const song = document.getElementById('song');
-    const endSound = document.getElementById('endSound');
+      const clickSound = document.getElementById('clickSound');
+      const song = document.getElementById('song');
+      const endSound = document.getElementById('endSound');
 
-    let countdown;
-    let timeLeft = 30;
+      let countdown;
+      let timeLeft = 30;
 
-    playBtn.addEventListener('click', () => {
-      clickSound.currentTime = 0;
-      clickSound.play();
+      playBtn.addEventListener('click', () => {
+        clickSound.currentTime = 0;
+        clickSound.play();
 
-      clearInterval(countdown);
-      timeLeft = 30;
-      timerDisplay.textContent = timeLeft;
-
-      // Start the main song (full 30s)
-      song.currentTime = 0;
-      song.play();
-
-      // Play end sound at 29.5 seconds
-      setTimeout(() => {
-        endSound.currentTime = 0;
-        endSound.play();
-      }, 500); // 0.5 seconds after starting
-
-      // Countdown timer
-      countdown = setInterval(() => {
-        timeLeft--;
+        clearInterval(countdown);
+        timeLeft = 30;
         timerDisplay.textContent = timeLeft;
 
-        if (timeLeft <= 0) {
-          clearInterval(countdown);
-          // song continues until 30s naturally
+        // Start main song for full 30s
+        song.currentTime = 0;
+        song.play();
+
+        // Play end sound at 29.5 seconds
+        setTimeout(() => {
+          endSound.currentTime = 0;
+          endSound.play();
+        }, 500); // 0.5 seconds after start
+
+        // Countdown timer
+        countdown = setInterval(() => {
+          timeLeft--;
+          timerDisplay.textContent = timeLeft;
+
+          if (timeLeft <= 0) {
+            clearInterval(countdown);
+            // song continues until it finishes naturally
+          }
+        }, 1000);
+      });
+    });
+  </script>
+
+</body>
+</html>
