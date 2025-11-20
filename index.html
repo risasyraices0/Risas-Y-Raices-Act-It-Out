@@ -90,14 +90,14 @@
   timerDisplay.textContent = timeLeft;
 
   /* ⭐ STOP SONG AT A SPECIFIC TIME ⭐ */
-  if (timeLeft === 27) {  // ← change 12 to ANY number you want
+  if (timeLeft === 26) {  // ← change 12 to ANY number you want
     song.pause();
     song.currentTime = 0;
   }
 
-  if (timeLeft <= 0) {
+  if (timeLeft <= 27) {
     clearInterval(countdown);
-    endSound.currentTime = 26;
+    endSound.currentTime = 0;
     endSound.play();
   }
 }, 1000);
