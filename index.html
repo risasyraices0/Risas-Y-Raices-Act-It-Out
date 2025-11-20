@@ -66,11 +66,11 @@
   const endSound = document.getElementById('endSound');
 
   playBtn.addEventListener('click', () => {
-    // Play click sound first
+    // Play click sound
     clickSound.currentTime = 0;
     clickSound.play();
 
-    // Start the 30-second timer and song after click sound
+    // Once click sound ends, start timer and song
     clickSound.onended = () => {
       let timeLeft = 30;
       timerDisplay.textContent = timeLeft;
@@ -84,17 +84,13 @@
 
         if (timeLeft <= 0) {
           clearInterval(countdown);
+
+          // Stop the song
           song.pause();
           song.currentTime = 0;
 
-          // Play end sound
+          // Play end sound after timer
           endSound.currentTime = 0;
           endSound.play();
         }
-      }, 1000);
-    };
-  });
-</script>
-
-</body>
-</html>
+      }
